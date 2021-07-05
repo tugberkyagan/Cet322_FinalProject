@@ -16,14 +16,13 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.isComplete)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.isHundread)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
+
+
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
@@ -32,20 +31,19 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.isComplete)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.isHundread)
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Id)
             </td>
@@ -55,6 +53,19 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+
+            @foreach (var subTodo in Model.Where(x => x.Id == item.Id).FirstOrDefault().SubTodos)
+            {
+                <tr>
+                    <td style="padding-left:50px;">
+                        @Html.DisplayFor(modelItem => subTodo.Title)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => subTodo.isComplete)
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>

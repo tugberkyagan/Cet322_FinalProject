@@ -15,7 +15,6 @@ namespace Cet322_FinalProject.Models
         public string Description { get; set; }
         public virtual List<SubTodo> SubTodos { get; set; }
         public bool isComplete { get; set; }
-        public int isHundread { get; set; }
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
 

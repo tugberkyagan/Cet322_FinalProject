@@ -22,21 +22,9 @@ namespace Cet322_FinalProject.Controllers
         // GET: Todo
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Todo.Include(t => t.Category);
-            foreach (var dbContext in applicationDbContext)
-
-            {
-                var unCompleteCount = 0;
-                if (dbContext.SubTodos != null)
-                {
-                    unCompleteCount = dbContext.SubTodos.Where(x => x.isComplete == false).Count();
-                }
-                if(unCompleteCount == 0 && dbContext.SubTodos != null)
-                {
-                    dbContext.isComplete = true;
-                }
-            }
-            return View(await applicationDbContext.ToListAsync());
+            var todos = await _context.Todo.Include(t => t.Category).Include(x => x.SubTodos).ToListAsync();
+            
+            return View(todos);
         }
 
         // GET: Todo/Details/5
@@ -70,7 +58,7 @@ namespace Cet322_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,isComplete,isHundread,CategoryId")] Todo todo)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,isComplete,CategoryId")] Todo todo)
         {
             if (ModelState.IsValid)
             {
@@ -104,7 +92,7 @@ namespace Cet322_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,isComplete,isHundread,CategoryId")] Todo todo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,SubTodos,isComplete,CategoryId")] Todo todo)
         {
             if (id != todo.Id)
             {
@@ -115,7 +103,19 @@ namespace Cet322_FinalProject.Controllers
             {
                 try
                 {
+                    
+                    var subTodos = await _context.SubTodo.Where(x => x.TodoId == todo.Id).ToListAsync();
+
+                    if (todo.isComplete == true)
+                    {
+                        foreach (var subTodo in subTodos)
+                        {
+                            subTodo.isComplete = true;
+                        }
+                    }
+
                     _context.Update(todo);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

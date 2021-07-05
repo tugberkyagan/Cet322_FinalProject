@@ -13,8 +13,8 @@ namespace Cet322_FinalProject.Data
             : base(options)
         {
         }
-        public DbSet<Cet322_FinalProject.Models.Todo> Todo { get; set; }
-        public DbSet<Cet322_FinalProject.Models.SubTodo> SubTodo { get; set; }
-        public DbSet<Cet322_FinalProject.Models.Category> Category { get; set; }
+        public DbSet<Todo> Todo { get; set; }
+        public DbSet<SubTodo> SubTodo { get; set; }
+        public DbSet<Category> Category { get; set; }
     }
 }

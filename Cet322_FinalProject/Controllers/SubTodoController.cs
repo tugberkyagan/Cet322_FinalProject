@@ -22,7 +22,7 @@ namespace Cet322_FinalProject.Controllers
         // GET: SubTodo
         public async Task<IActionResult> Index()
 
-            
+
         {
             var subTodoList = await _context.SubTodo.Include("Todo").ToListAsync();
 
@@ -59,7 +59,7 @@ namespace Cet322_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,TodoId,isComplete,EffectRateOnTodo")] SubTodo subTodo)
+        public async Task<IActionResult> Create([Bind("Id,Title,TodoId,isComplete")] SubTodo subTodo)
         {
             if (ModelState.IsValid)
             {
@@ -85,6 +85,9 @@ namespace Cet322_FinalProject.Controllers
             {
                 return NotFound();
             }
+
+
+
             return View(subTodo);
         }
 
@@ -93,7 +96,7 @@ namespace Cet322_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,TodoId,isComplete,EffectRateOnTodo")] SubTodo subTodo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,TodoId,isComplete")] SubTodo subTodo)
         {
             if (id != subTodo.Id)
             {
@@ -105,8 +108,26 @@ namespace Cet322_FinalProject.Controllers
                 try
                 {
                     _context.Update(subTodo);
+
+                    var todos = await _context.Todo.ToListAsync();
+                    var todo = todos.Where(x => x.Id == subTodo.TodoId).FirstOrDefault();
+                    var unCompleteCount = 0;
+
+                    unCompleteCount = todo.SubTodos.Where(x => x.isComplete == false).Count();
+
+                    if (todo.SubTodos != null)
+                    {
+                        if (unCompleteCount == 0)
+                            todo.isComplete = true;
+                        if (unCompleteCount > 0)
+                            todo.isComplete = false;
+                    }
+
+
+                    _context.Update(todo);
+
                     await _context.SaveChangesAsync();
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

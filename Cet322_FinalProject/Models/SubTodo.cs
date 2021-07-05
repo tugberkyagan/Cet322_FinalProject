@@ -17,7 +17,7 @@ namespace Cet322_FinalProject.Models
         public Todo Todo { get; set; }
         public int TodoId { get; set; }
         public bool isComplete { get; set; }
-        public int EffectRateOnTodo { get; set; }
+       
 
 
     }
